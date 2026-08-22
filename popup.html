@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Regex Tab Keeper</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main>
+    <header class="app-header">
+      <p class="eyebrow">TAB MANAGEMENT</p>
+      <h1>Regex Tab Keeper</h1>
+      <p class="lead">一致する URL のタブだけを残します。</p>
+    </header>
+
+    <section class="panel switch-panel" aria-label="有効設定">
+      <div>
+        <h2>拡張機能を有効にする</h2>
+        <p>無効中は一括削除を実行できません。</p>
+      </div>
+      <label class="switch">
+        <input id="enabled" type="checkbox" checked>
+        <span class="slider" aria-hidden="true"></span>
+        <span class="sr-only">拡張機能を有効にする</span>
+      </label>
+    </section>
+
+    <section class="notice" aria-label="安全確認">
+      <strong>実行前に確認</strong>
+      <p>現在のウィンドウ内で、以下の有効な正規表現に一致しないタブを閉じます。閉じたタブは Chrome の履歴から復元できる場合があります。</p>
+    </section>
+
+    <section class="panel" aria-labelledby="rule-form-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">KEEP RULE</p>
+          <h2 id="rule-form-title">残す URL 正規表現</h2>
+        </div>
+        <span id="ruleCount" class="count-badge" aria-label="登録ルール数">0</span>
+      </div>
+
+      <form id="ruleForm" novalidate>
+        <input id="editingId" type="hidden">
+        <label for="pattern">URL 正規表現</label>
+        <input id="pattern" name="pattern" type="text" spellcheck="false" autocomplete="off" required placeholder="^https://example\\.com/">
+        <p class="hint"><code>^</code> と <code>$</code> で範囲を固定できます。例: <code>^https://(www\.)?example\.com/</code></p>
+
+        <label for="flags">フラグ <span class="optional">任意</span></label>
+        <input id="flags" name="flags" type="text" spellcheck="false" autocomplete="off" maxlength="8" placeholder="i">
+        <p class="hint"><code>i</code>（大文字・小文字を区別しない）などの JavaScript 正規表現フラグです。</p>
+
+        <div class="button-row form-buttons">
+          <button id="saveButton" class="primary" type="submit">ルールを保存</button>
+          <button id="cancelButton" class="secondary" type="button" hidden>編集を中止</button>
+        </div>
+        <p id="formMessage" class="message" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="panel" aria-labelledby="rules-title">
+      <div class="section-heading compact">
+        <div>
+          <p class="section-kicker">SAVED RULES</p>
+          <h2 id="rules-title">登録済みルール</h2>
+        </div>
+      </div>
+      <div id="ruleList" class="rule-list"></div>
+    </section>
+
+    <section class="panel action-panel" aria-labelledby="execute-title">
+      <div>
+        <p class="section-kicker">REVIEW &amp; RUN</p>
+        <h2 id="execute-title">対象タブを確認</h2>
+        <p id="previewSummary" class="preview-summary">確認中です。</p>
+      </div>
+      <div class="button-row">
+        <button id="refreshPreviewButton" class="secondary" type="button">再読み込み</button>
+        <button id="closeButton" class="danger" type="button" disabled>一致しないタブを閉じる</button>
+      </div>
+      <p id="actionMessage" class="message" role="status" aria-live="polite"></p>
+
+      <details class="preview-details">
+        <summary>残すタブ <span id="keepCount">0</span> 件</summary>
+        <ul id="keepList" class="tab-list"></ul>
+      </details>
+      <details class="preview-details" open>
+        <summary>閉じるタブ <span id="closeCount">0</span> 件</summary>
+        <ul id="closeList" class="tab-list"></ul>
+      </details>
+    </section>
+
+    <section class="panel transfer-panel" aria-labelledby="transfer-title">
+      <div>
+        <p class="section-kicker">SETTINGS</p>
+        <h2 id="transfer-title">設定の移行</h2>
+        <p>ルールと有効状態を JSON で保存・復元できます。</p>
+      </div>
+      <div class="button-row">
+        <button id="exportButton" class="secondary" type="button">エクスポート</button>
+        <label class="secondary import-label" for="importInput">インポート</label>
+        <input id="importInput" type="file" accept="application/json,.json" hidden>
+      </div>
+      <p id="transferMessage" class="message" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+  <script src="core.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
