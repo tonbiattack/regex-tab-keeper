@@ -76,6 +76,14 @@ npm ci
 npm run check
 ```
 
+`npm run check` を使わずテストだけを実行する場合は、次のコマンドを使えます。
+
+```bash
+node --test
+```
+
+個別のテストは `node --test test/core.test.js` のようにファイルを指定します。テストは外部ライブラリではなく、Node.js 組み込みの `node:test` と `node:assert/strict` で書かれています。使用ライブラリの判別方法と構文検査の手順は [実装解説](docs/implementation-guide.md#テストで使用しているライブラリの判別方法) にまとめています。
+
 Chrome に読み込んで確認する場合は、上記の自動テスト後に `chrome://extensions` から「再読み込み」を押し、専用のテスト用ウィンドウでプレビューと確認ダイアログを確認してください。普段使っているタブを使った削除操作の検証は避けます。
 
 |ファイル|役割|

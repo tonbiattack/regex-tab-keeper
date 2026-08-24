@@ -71,4 +71,45 @@ npm run check
 
 `npm run check` は `core.js`、`background.js`、`popup.js` の構文検査と `node --test` を実行します。バックグラウンド処理のテストでは Chrome API をモックし、複数ウィンドウのタブを取得すること、有効ルールが0件なら削除しないこと、別ウィンドウの不一致タブを削除対象に含めることを確認します。
 
+### `npm run check` を使わずに実行する
+
+テストだけを実行する場合は、プロジェクトのルートディレクトリで次を実行します。`node --test` は Node.js 組み込みのテストランナーを直接起動するため、npm のスクリプトを経由しません。
+
+```bash
+node --test
+```
+
+特定のテストファイルだけを実行する場合は、ファイルを指定します。
+
+```bash
+node --test test/core.test.js
+node --test test/background.test.js
+node --test test/manifest.test.js
+```
+
+構文検査も個別に行う場合は、`node --check` を使います。これはテストを実行せず、JavaScript の構文だけを検査します。
+
+```bash
+node --check core.js
+node --check background.js
+node --check popup.js
+```
+
+### テストで使用しているライブラリの判別方法
+
+このプロジェクトのテストは、外部のテストライブラリを使わず、Node.js 標準の次の機能で書かれています。
+
+|機能|用途|確認方法|
+|---|---|---|
+|`node:test`|テストケースの登録と実行|`test/*.test.js` の `require("node:test")` を確認します。|
+|`node:assert/strict`|期待結果の検証|`test/*.test.js` の `require("node:assert/strict")` を確認します。|
+|Node.js の標準モジュール|ファイル操作、パス操作、モック用の処理|`require("node:fs")`、`require("node:path")` などを確認します。|
+
+使用ライブラリを判別するときは、次の順番で確認します。
+
+1. `package.json` の `dependencies`、`devDependencies`、`scripts` を確認します。このプロジェクトでは依存関係がなく、`test` スクリプトが `node --test` を実行します。
+2. テストファイルの `require` または `import` を確認します。`node:test` と `node:assert/strict` は、パッケージ名ではなく Node.js の組み込みモジュールを示します。
+3. `describe`、`it`、`expect` などの API がどのモジュールから提供されているかを確認します。このプロジェクトでは `test()` は `node:test` から、検証は `node:assert/strict` から提供されています。
+4. 実際の実行方法を確認します。`node --test` を直接使っている場合は、Jest や Mocha などの外部テストランナーは使用していません。
+
 GitHub Actions は pull request と `main` への push で同じ検証を実行します。
