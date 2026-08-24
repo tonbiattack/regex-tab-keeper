@@ -17,9 +17,9 @@ function getSettings() {
   });
 }
 
-function queryCurrentWindowTabs() {
+function queryAllTabs() {
   return new Promise((resolve, reject) => {
-    chrome.tabs.query({ currentWindow: true }, (tabs) => {
+    chrome.tabs.query({}, (tabs) => {
       if (chrome.runtime.lastError) {
         reject(new Error(chrome.runtime.lastError.message));
         return;
@@ -46,7 +46,7 @@ function removeTabs(tabIds) {
 }
 
 async function buildPreview() {
-  const [settings, tabs] = await Promise.all([getSettings(), queryCurrentWindowTabs()]);
+  const [settings, tabs] = await Promise.all([getSettings(), queryAllTabs()]);
   const result = classifyTabs(tabs, settings.rules);
   return {
     enabled: settings.enabled,
@@ -90,5 +90,5 @@ function handleMessage(message, _sender, sendResponse) {
 chrome.runtime.onMessage.addListener(handleMessage);
 
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { getSettings, queryCurrentWindowTabs, removeTabs, buildPreview, handleMessage };
+  module.exports = { getSettings, queryAllTabs, removeTabs, buildPreview, handleMessage };
 }

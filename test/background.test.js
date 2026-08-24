@@ -48,18 +48,18 @@ test.afterEach(() => {
   delete require.cache[corePath];
 });
 
-test("preview reads current-window tabs and returns a safe classification", async () => {
+test("preview reads tabs from all windows and returns a safe classification", async () => {
   const { background, calls } = loadBackground({
     settings: { enabled: true, rules: [{ id: "keep", pattern: "example\\.com", flags: "", enabled: true }] },
     tabs: [
-      { id: 1, title: "Keep", url: "https://example.com/docs" },
-      { id: 2, title: "Close", url: "https://other.test/" }
+      { id: 1, windowId: 10, title: "Keep", url: "https://example.com/docs" },
+      { id: 2, windowId: 11, title: "Close", url: "https://other.test/" }
     ]
   });
 
   const response = await request(background.handleMessage, { type: "getPreview" });
   assert.equal(response.ok, true);
-  assert.deepEqual(calls.query, [{ currentWindow: true }]);
+  assert.deepEqual(calls.query, [{}]);
   assert.deepEqual(response.preview.keep.map((tab) => tab.id), [1]);
   assert.deepEqual(response.preview.close.map((tab) => tab.id), [2]);
 });
@@ -80,9 +80,9 @@ test("close request removes only nonmatching tab IDs and reports counts", async 
   const { background, calls } = loadBackground({
     settings: { enabled: true, rules: [{ id: "keep", pattern: "^https://keep\\.test/", flags: "", enabled: true }] },
     tabs: [
-      { id: 10, title: "Keep", url: "https://keep.test/" },
-      { id: 11, title: "Close", url: "https://close.test/" },
-      { id: "not-an-id", title: "Ignored ID", url: "https://close.test/" }
+      { id: 10, windowId: 10, title: "Keep", url: "https://keep.test/" },
+      { id: 11, windowId: 11, title: "Close in another window", url: "https://close.test/" },
+      { id: "not-an-id", windowId: 12, title: "Ignored ID", url: "https://close.test/" }
     ]
   });
 

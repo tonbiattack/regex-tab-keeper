@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Regex Tab Keeper",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "URL正規表現に一致するタブを残し、それ以外のタブをまとめて閉じます。",
   "permissions": ["storage", "tabs"],
   "action": {
