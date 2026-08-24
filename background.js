@@ -57,7 +57,7 @@ async function buildPreview() {
   };
 }
 
-chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+function handleMessage(message, _sender, sendResponse) {
   if (!message || typeof message.type !== "string") return;
 
   if (message.type === "getPreview") {
@@ -85,4 +85,10 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       .catch((error) => sendResponse({ ok: false, message: error instanceof Error ? error.message : "タブを閉じられませんでした。" }));
     return true;
   }
-});
+}
+
+chrome.runtime.onMessage.addListener(handleMessage);
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { getSettings, queryCurrentWindowTabs, removeTabs, buildPreview, handleMessage };
+}
