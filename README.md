@@ -11,6 +11,7 @@
 |設定保存|Chrome拡張機能のローカルストレージ|
 |設定移行|JSONのエクスポート・インポートに対応|
 |実行保護|事前プレビュー、確認ダイアログ、0件ルール時の実行禁止|
+|通信・収集|外部サーバーへの送信や分析は行いません。ルールは Chrome のローカルストレージにのみ保存されます。|
 
 ## 導入
 
@@ -64,14 +65,14 @@ Chromeの標準機能により、閉じたタブは履歴から復元できる�
 
 ## 開発・検証
 
-依存パッケージはありません。以下のコマンドでJavaScriptの構文検証と、正規表現・タブ分類・設定移行ロジックの回帰テストを実行できます。
+依存パッケージはありません。Node.js 20 以上で、JavaScriptの構文検証と、正規表現・タブ分類・設定移行・バックグラウンドの安全チェックの回帰テストを実行できます。
 
 ```bash
-node --check core.js
-node --check background.js
-node --check popup.js
-node verify-core.js
+npm ci
+npm run check
 ```
+
+Chrome に読み込んで確認する場合は、上記の自動テスト後に `chrome://extensions` から「再読み込み」を押し、専用のテスト用ウィンドウでプレビューと確認ダイアログを確認してください。普段使っているタブを使った削除操作の検証は避けます。
 
 |ファイル|役割|
 |---|---|
@@ -79,7 +80,13 @@ node verify-core.js
 |`core.js`|正規表現の検証、ルール正規化、URL照合、タブ分類、設定移行を実装します。|
 |`background.js`|現在のウィンドウのタブ一覧取得と、安全チェック後の一括削除を担当します。|
 |`popup.html` / `popup.css` / `popup.js`|ルール編集、プレビュー、確認付き実行、設定移行の画面を提供します。|
-|`verify-core.js`|主要ロジックをNode.js標準のアサーションで検証します。|
+|`test/core.test.js`|正規表現、ルール正規化、タブ分類、設定移行を検証します。|
+|`test/background.test.js`|Chrome API をモックし、プレビューと削除前の安全チェックを検証します。|
+|`.github/workflows/ci.yml`|pull request と `main` への push で `npm run check` を実行します。|
+
+## ライセンス
+
+[MIT License](LICENSE) で公開しています。
 
 ## 参考
 
