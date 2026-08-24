@@ -1,6 +1,6 @@
 # Regex Tab Keeper
 
-**Regex Tab Keeper** は、現在のChromeウィンドウ内で、登録済みの URL 正規表現に一致するタブだけを残し、それ以外を一括で閉じる Manifest V3 Chrome 拡張機能です。誤ってすべてのタブを閉じないように、実行前に残すタブと閉じるタブを確認し、さらに確認ダイアログを通過した場合だけ削除します。
+**Regex Tab Keeper** は、アクセス可能なすべての Chrome ウィンドウで、登録済みの URL 正規表現に一致するタブだけを残し、それ以外を一括で閉じる Manifest V3 Chrome 拡張機能です。誤ってすべてのタブを閉じないように、実行前に残すタブと閉じるタブを確認し、さらに確認ダイアログを通過した場合だけ削除します。
 
 > URL ルールを1件も有効にしていない状態では、一括削除を実行できません。
 
@@ -83,6 +83,8 @@ Chrome に読み込んで確認する場合は、上記の自動テスト後に 
 |`test/core.test.js`|正規表現、ルール正規化、タブ分類、設定移行を検証します。|
 |`test/background.test.js`|Chrome API をモックし、プレビューと削除前の安全チェックを検証します。|
 |`.github/workflows/ci.yml`|pull request と `main` への push で `npm run check` を実行します。|
+
+アーキテクチャと処理の詳細は [実装解説](docs/implementation-guide.md) を参照してください。
 
 ## ライセンス
 
