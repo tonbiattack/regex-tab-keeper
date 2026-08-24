@@ -304,7 +304,7 @@
   async function runClose() {
     if (!state.preview || closeButton.disabled) return;
     const { close, keep } = state.preview;
-    const text = `現在のウィンドウで ${close.length} 件のタブを閉じ、${keep.length} 件のタブを残します。\n\n続行しますか？`;
+    const text = `すべての Chrome ウィンドウで ${close.length} 件のタブを閉じ、${keep.length} 件のタブを残します。\n\n続行しますか？`;
     if (!window.confirm(text)) {
       setMessage(actionMessage, "一括削除を取り消しました。", "");
       return;
